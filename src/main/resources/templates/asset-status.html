@@ -370,6 +370,9 @@
             </div>
         </div>
     </div>
+    <!-- 숨겨진 필드 -->
+    <input type="hidden" id="userAge">
+    <input type="hidden" id="userMonthlyIncome">
 
 
 
@@ -400,14 +403,17 @@
                 const fund = parseFloat(data.fundHoldings)  || 0;
                 const debtAmount = parseFloat(data.debtAmount) || 0;
                 const totalAssets = parseFloat(data.totalFinancialAssets)  || 0;
-
                 const roundedDeposit = deposit.toFixed(0);
+                const age = data.age || 0; // age 추가
+                const monthlyIncome = parseFloat(data.monthly_income) || 0; // monthly_income 추가
 
                 $('#depositAmount').text(parseFloat(roundedDeposit).toLocaleString() + ' 원');
                 $('#savingsAmount').text(savings.toLocaleString() + ' 원');
                 $('#fundAmount').text(fund.toLocaleString() + ' 원');
                 $('#debtAmount').text(debtAmount.toLocaleString() + ' 원');
                 $('#totalAssets').text(totalAssets.toLocaleString() + ' 원');
+                $('#userAge').val(age);
+                $('#userMonthlyIncome').val(monthlyIncome.toLocaleString());
 
 
                 // 자산 현황 차트
@@ -623,8 +629,8 @@
                     const netAssetsDiff = (userNetAssets / avgNetAssets).toFixed(2);
                     const debtDiff = (userDebt / avgDebt).toFixed(2);
 
-                    let netAssetsMent = `${username}님은 군집 평균보다 ${netAssetsDiff} 배 많은 순자산을 보유하고 있습니다.`;
-                    let debtMent = `${username}님은 군집 평균보다 ${debtDiff} 배 많은 부채를 보유하고 있습니다.`;
+                    let netAssetsMent = `${username}님은 고객님이 속한 그룹 평균보다 ${netAssetsDiff} 배 많은 순자산을 보유하고 있습니다.`;
+                    let debtMent = `${username}님은 고객님이 속한 그룹 평균보다 ${debtDiff} 배 많은 부채를 보유하고 있습니다.`;
 
                     $('#userLocationMent').html(`${netAssetsMent}<br>${debtMent}`);
                     $('#analysisResult').fadeIn(500);

@@ -40,20 +40,41 @@ public class UserProfileController {
 
     @GetMapping("/asset-data")
     @ResponseBody
-    public Map<String, Double> getAssetData(HttpSession session) {
+    public Map<String, Object> getAssetData(HttpSession session) {
         User user = (User) session.getAttribute("user");
-        Map<String, Double> assetData = new HashMap<>();
+        Map<String, Object> assetData = new HashMap<>();
 
         if (user != null) {
             UserProfile userProfile = userProfileRepository.findByProfileUserId(user.getUserId());
             if (userProfile != null) {
-                assetData.put("depositHoldings", userProfile.getDepositHoldings());
-                assetData.put("savingsHoldings", userProfile.getSavingsHoldings());
-                assetData.put("fundHoldings", userProfile.getFundHoldings());
-                assetData.put("debtAmount", userProfile.getDebtAmount());
-                assetData.put("totalFinancialAssets", userProfile.getTotalFinancialAssets());
+                assetData.put("depositHoldings", userProfile.getDepositHoldings() != null ? userProfile.getDepositHoldings() : 0.0);
+                assetData.put("savingsHoldings", userProfile.getSavingsHoldings() != null ? userProfile.getSavingsHoldings() : 0.0);
+                assetData.put("fundHoldings", userProfile.getFundHoldings() != null ? userProfile.getFundHoldings() : 0.0);
+                assetData.put("debtAmount", userProfile.getDebtAmount() != null ? userProfile.getDebtAmount() : 0.0);
+                assetData.put("totalFinancialAssets", userProfile.getTotalFinancialAssets() != null ? userProfile.getTotalFinancialAssets() : 0.0);
+                assetData.put("age", userProfile.getAge() != null ? userProfile.getAge() : 0); // age 추가
+                assetData.put("monthly_income", userProfile.getMonthlyIncome() != null ? userProfile.getMonthlyIncome() : 0.0); // monthly_income 추가
+            } else {
+                // 기본값 설정
+                assetData.put("depositHoldings", 0.0);
+                assetData.put("savingsHoldings", 0.0);
+                assetData.put("fundHoldings", 0.0);
+                assetData.put("debtAmount", 0.0);
+                assetData.put("totalFinancialAssets", 0.0);
+                assetData.put("age", 0); // 기본값
+                assetData.put("monthly_income", 0.0); // 기본값
             }
+        } else {
+            // 세션에 사용자 정보가 없는 경우 기본값 반환
+            assetData.put("depositHoldings", 0.0);
+            assetData.put("savingsHoldings", 0.0);
+            assetData.put("fundHoldings", 0.0);
+            assetData.put("debtAmount", 0.0);
+            assetData.put("totalFinancialAssets", 0.0);
+            assetData.put("age", 0); // 기본값
+            assetData.put("monthly_income", 0.0); // 기본값
         }
+
         return assetData;
     }
 

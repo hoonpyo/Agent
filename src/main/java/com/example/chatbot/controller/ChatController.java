@@ -89,6 +89,9 @@ public class ChatController {
         double fund = userProfile.getFundHoldings() != null ? userProfile.getFundHoldings() : 0;
         double debt = userProfile.getDebtAmount() != null ? userProfile.getDebtAmount() : 0;
         double totalAssets = deposit + savings + fund - debt;
+        int age = userProfile.getAge() != null ? userProfile.getAge() : 0;
+        double monthlyIncome = userProfile.getMonthlyIncome() != null ? userProfile.getMonthlyIncome() : 0;
+
 
         Map<String, String> assetInfo = new HashMap<>();
         assetInfo.put("deposit", formatNumber(deposit));
@@ -96,6 +99,8 @@ public class ChatController {
         assetInfo.put("fund", formatNumber(fund));
         assetInfo.put("debt", formatNumber(debt));
         assetInfo.put("totalAssets", formatNumber(totalAssets));
+        assetInfo.put("age", String.valueOf(age));
+        assetInfo.put("monthly_income", formatNumber(monthlyIncome));
         return assetInfo;
     }
 
