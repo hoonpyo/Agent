@@ -8,24 +8,26 @@
   <link rel="stylesheet" href="/css/common.css"> <!-- 공통 스타일 -->
   <style>
     body {
-      background-color: rgb(255, 255, 255);
+      background-color: #ffffff;
       margin: 0;
+      font-family: 'Arial', sans-serif;
     }
 
     .container {
       margin-top: 80px;
       padding: 20px;
-      background-color: rgb(255, 255, 255);
+      background-color: #ffffff;
       border-radius: 10px;
-      max-width: 1000px;
+      max-width: 1100px;
       margin-left: auto;
       margin-right: auto;
+
     }
 
     h1 {
       text-align: center;
-      font-size: 28px;
-      color: #050000;
+      font-size: 32px;
+      color: #333333;
       margin-bottom: 20px;
     }
 
@@ -50,12 +52,14 @@
     }
 
     .list-group-item {
-      background-color: rgb(255, 255, 255);
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      background-color: #ffffff;
       border-radius: 10px;
       box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
       padding: 20px;
-      transition: background-color 0.3s ease, box-shadow 0.3s ease;
-      text-align: left;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
 
     .list-group-item.hidden {
@@ -63,16 +67,40 @@
     }
 
     .list-group-item:hover {
-      background-color: #f1f9ff;
-      box-shadow: 0 4px 10px rgba(0, 123, 255, 0.2);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px rgba(0, 123, 255, 0.2);
+    }
+
+    .list-group-item .icon-wrapper {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 80px;
+      height: 80px;
+      background-color: #e6f7ff;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .list-group-item .icon-wrapper i {
+      font-size: 36px;
+      color: #007bff;
     }
 
     .list-group-item h4 {
       color: #007bff;
-      margin-top: 0;
-      margin-bottom: 15px;
-      font-size: 24px;
-      text-align: center;
+      margin: 0 0 10px 0;
+      font-size: 20px;
+    }
+
+    .list-group-item p {
+      margin: 5px 0;
+      font-size: 14px;
+      color: #333333;
+    }
+
+    .list-group-item p strong {
+      color: #555555;
     }
 
     .load-more {
@@ -109,8 +137,35 @@
       }
 
       h1 {
-        font-size: 32px;
+        font-size: 36px;
       }
+    }
+
+    /* 네비게이션 탭 스타일 */
+    .tabs {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 20px;
+      border-bottom: 2px solid #e0e0e0;
+    }
+
+    .tab {
+      padding: 10px 50px;
+      margin: 0 10px;
+      text-decoration: none;
+      font-size: 16px;
+      color: #333;
+      border-bottom: 3px solid transparent;
+      transition: color 0.3s, border-bottom 0.3s;
+    }
+
+    .tab:hover {
+      color: #007bff;
+    }
+
+    .tab.active {
+      color: #007bff;
+      border-bottom: 3px solid #007bff;
     }
   </style>
 </head>
@@ -118,7 +173,11 @@
 <div th:replace="~{partials/navbar :: navbar}"></div>
 
 <div class="container">
-  <h1>예적금</h1>
+  <div class="tabs">
+    <a href="/product-list" class="tab" id="deposit-tab">예적금</a>
+    <a href="/product-list/card" class="tab" id="card-tab">카드</a>
+    <a href="/product-list/fund" class="tab" id="fund-tab">펀드</a>
+  </div>
 
   <!-- 검색 바 -->
   <div class="search-bar">
@@ -129,11 +188,17 @@
     <div th:each="product, iterStat : ${products}"
          th:classappend="${iterStat.index >= 6 ? 'hidden' : ''}"
          class="list-group-item">
-      <h4 th:text="${product.title}">상품명</h4>
-      <p><strong>은행:</strong> <span th:text="${product.bank}">우리은행</span></p>
-      <p><strong>최고 금리:</strong> <span th:text="${product.maxRate}">5.5%</span></p>
-      <p><strong>기본 금리:</strong> <span th:text="${product.baseRate}">2.0%</span></p>
-      <p><strong>상세 설명:</strong> <span th:text="${product.details}">이 상품은...</span></p>
+      <!-- 상품 아이콘 -->
+      <div class="icon-wrapper">
+        <i class="fas fa-piggy-bank"></i>
+      </div>
+      <div>
+        <h4 th:text="${product.title}">상품명</h4>
+        <p><strong>은행:</strong> <span th:text="${product.bank}">우리은행</span></p>
+        <p><strong>최고 금리:</strong> <span th:text="${product.maxRate}">5.5%</span></p>
+        <p><strong>기본 금리:</strong> <span th:text="${product.baseRate}">2.0%</span></p>
+        <p><strong>상세 설명:</strong> <span th:text="${product.details}">이 상품은...</span></p>
+      </div>
     </div>
   </div>
 
@@ -154,7 +219,7 @@
       const details = item.querySelector('p:last-child span').textContent.toLowerCase();
 
       if (title.includes(input) || details.includes(input)) {
-        item.style.display = 'block';
+        item.style.display = 'flex';
         if (visibleCount >= 6) {
           item.classList.add('hidden');
         } else {
@@ -186,6 +251,19 @@
       document.querySelector('.load-more').style.display = 'none';
     }
   }
+
+  // 현재 페이지를 기준으로 탭에 active 클래스 추가
+  document.addEventListener("DOMContentLoaded", () => {
+    const currentPath = window.location.pathname;
+    const tabs = document.querySelectorAll(".tab");
+
+    tabs.forEach(tab => {
+      if (tab.getAttribute("href") === currentPath) {
+        tab.classList.add("active");
+      }
+    });
+  });
+
 </script>
 </body>
 </html>

@@ -63,13 +63,17 @@ public class ChatController {
             sendAssetInfoToFastAPI(assetInfo);
 
             String initialGreeting = String.format(
-                    "안녕하세요, %s님! 예금을 %s원, 적금을 %s원, 펀드상품을 %s원, 대출을 %s원 보유하고 계시네요. 총 자산은 %s원입니다. 어떤 도움을 드릴까요?",
-                    user.getUsername(), assetInfo.get("deposit"), assetInfo.get("savings"),
-                    assetInfo.get("fund"), assetInfo.get("debt"), assetInfo.get("totalAssets")
+                    "안녕하세요, %s님! 목표에 맞는 자산 배분 전략을 찾는 데 도움을 드릴게요. 어떤 도움이 필요하신가요?",
+                    user.getUsername()
             );
+
+            String secondPrompt = "예를 들어 자산 배분 비율 추천해줘, 그 비율에 맞는 상품 추천해줘 와 같은 요청을 해보세요.";
+
             model.addAttribute("initialGreeting", initialGreeting);
+            model.addAttribute("secondPrompt", secondPrompt);
         } else {
             model.addAttribute("initialGreeting", "사용자의 자산 정보가 없습니다.");
+            model.addAttribute("secondPrompt", "자산 정보를 먼저 등록해 주세요.");
         }
 
         // 세션에서 이전 채팅 내역 가져오기
